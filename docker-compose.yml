@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: poc-frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - poc-net
+    restart: always
+
+  middleware-gateway:
+    build:
+      context: ./middleware
+      dockerfile: Dockerfile
+    container_name: poc-middleware
+    ports:
+      - "3001:3001"
+    environment:
+      - BACKEND_URL=http://backend-service:3002
+      - HF_HOME=/usr/src/app/.cache
+#    volumes:
+#      - ./middleware/.cache:/usr/src/app/.cache
+    networks:
+      - poc-net
+    depends_on:
+      - backend-service
+    restart: always
+
+  backend-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: poc-backend
+    environment:
+      - GATEWAY_URL=http://middleware-gateway:3001
+    networks:
+      - poc-net
+    expose:
+      - "3002"
+    restart: always
+
+networks:
+  poc-net:
+    driver: bridge

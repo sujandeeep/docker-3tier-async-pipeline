@@ -1,0 +1,12 @@
+{
+  "name": "backend-service",
+  "version": "1.0.0",
+  "description": "Backend API with 5s delay processing",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
